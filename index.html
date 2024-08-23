@@ -11,21 +11,55 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://kit.fontawesome.com/3c1c9a36bb.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
-    <div class="container">
+    <div class="logon-container">
+      <div class="form-box">
+        <h1>Sign Up</h1>
+        <form>
+          <div class="input-group">
+            <div class="input-field">
+              <i class="fa-solid fa-user"></i>
+              <input type="first-name" placeholder="First name" />
+            </div>
+            <div class="input-field">
+              <i class="fa-solid fa-user"></i>
+              <input type="second-name" placeholder="Second name" />
+            </div>
+            <div class="input-field">
+              <i class="fa-regular fa-user"></i>
+              <input type="login" placeholder="Login" />
+            </div>
+            <div class="input-field">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" placeholder="Password" />
+            </div>
+            <div class="input-field">
+              <i class="fa-solid fa-envelope"></i>
+              <input type="email" placeholder="Email" />
+            </div>
+            <div class="input-field">
+              <i class="fa-solid fa-phone"></i>
+              <input type="phone" placeholder="Phone +79000000000" />
+            </div>
+            <p>Lost password <a href="#">Click here!</a></p>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="todo-app-container">
       <div class="todo-app">
         <h2>To-Do List <img src="images/icon.png" alt="" /></h2>
         <div class="row">
           <input type="text" id="input-box" placeholder="Add your text" />
           <button onclick="addTask()">Add</button>
         </div>
-        <ul id="list-container">
-          <!-- <li class="checked">Task 1</li>
-          <li>Task 2</li>
-          <li>Task 3</li> -->
-        </ul>
+        <ul id="list-todo-app-container"></ul>
       </div>
     </div>
     <script src="script.js"></script>
