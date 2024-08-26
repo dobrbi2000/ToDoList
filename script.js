@@ -1,17 +1,22 @@
 const inputBox = document.getElementById("input-box");
-const listContainer = document.getElementById("list-container");
+const listContainer = document.getElementById("list-todo-app-container");
 
 //auth
 
 document.addEventListener("DOMContentLoaded", function () {
-  checkUsserAuth();
+  checkUserAuth();
 });
 
-function checkUsserAuth() {
-  fetch("ya-praktikum.tech/api/v2/auth/user")
+function checkUserAuth() {
+  fetch("https://ya-praktikum.tech/api/v2/auth/user", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
     .then((response) => {
       if (response.ok) {
-        showToDoApp();
+        showTodoApp();
       } else {
         showLogonContainer();
       }
@@ -34,21 +39,21 @@ function showTodoApp() {
 
 document
   .getElementById("logonForm")
-  .addEventListener("signupBtn", function (event) {
+  .addEventListener("submit", function (event) {
     event.preventDefault();
     const userData = {
-      first_name: document.getElementById("firstName").value,
-      second_name: document.getElementById("secondName").value,
-      login: document.getElementById("login").value,
-      email: document.getElementById("email").value,
-      password: document.getElementById("password").value,
-      phone: document.getElementById("phone").value,
+      first_name: document.querySelector("#firstName input").value,
+      second_name: document.querySelector("#secondName input").value,
+      login: document.querySelector("#login input").value,
+      email: document.querySelector("#email input").value,
+      password: document.querySelector("#password input").value,
+      phone: document.querySelector("#phone input").value,
     };
     createUser(userData);
   });
 
 function createUser(userData) {
-  fetch("ya-praktikum.tech/api/v2/auth/signup", {
+  fetch("https://ya-praktikum.tech/api/v2/auth/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -68,33 +73,33 @@ function createUser(userData) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const signinBtn = document.getElementById("signinBtn");
-  const firstName = document.getElementById("firstName");
-  const secondName = document.getElementById("secondName");
-  const email = document.getElementById("email");
-  const phone = document.getElementById("phone");
+// document.addEventListener("DOMContentLoaded", function () {
+//   const signinBtn = document.getElementById("signinBtn");
+//   const firstName = document.getElementById("firstname");
+//   const secondName = document.getElementById("secondName");
+//   const email = document.getElementById("email");
+//   const phone = document.getElementById("phone");
 
-  signinBtn.addEventListener("click", function () {
-    firstName.style.maxHeight = "0";
-    secondName.style.maxHeight = "0";
-    email.style.maxHeight = "0";
-    phone.style.maxHeight = "0";
-    title.innerHTML = "Sign In";
-    signupBtn.classList.add("disable");
-    signinBtn.classList.remove("disable");
-  });
+//   signinBtn.addEventListener("click", function () {
+//     firstName.style.maxHeight = "0";
+//     secondName.style.maxHeight = "0";
+//     email.style.maxHeight = "0";
+//     phone.style.maxHeight = "0";
+//     title.innerHTML = "Sign In";
+//     signupBtn.classList.add("disable");
+//     signinBtn.classList.remove("disable");
+//   });
 
-  signupBtn.addEventListener("click", function () {
-    firstName.style.maxHeight = "60px";
-    secondName.style.maxHeight = "60px";
-    email.style.maxHeight = "60px";
-    phone.style.maxHeight = "60px";
-    title.innerHTML = "Sign Up";
-    signupBtn.classList.remove("disable");
-    signinBtn.classList.add("disable");
-  });
-});
+//   signupBtn.addEventListener("click", function () {
+//     firstName.style.maxHeight = "60px";
+//     secondName.style.maxHeight = "60px";
+//     email.style.maxHeight = "60px";
+//     phone.style.maxHeight = "60px";
+//     title.innerHTML = "Sign Up";
+//     signupBtn.classList.remove("disable");
+//     signinBtn.classList.add("disable");
+//   });
+// });
 
 function addTask() {
   if (inputBox.value === "") {
