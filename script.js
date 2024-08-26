@@ -13,6 +13,7 @@ function checkUserAuth() {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "include",
   })
     .then((response) => {
       if (response.ok) {
@@ -73,33 +74,33 @@ function createUser(userData) {
     });
 }
 
-// document.addEventListener("DOMContentLoaded", function () {
-//   const signinBtn = document.getElementById("signinBtn");
-//   const firstName = document.getElementById("firstname");
-//   const secondName = document.getElementById("secondName");
-//   const email = document.getElementById("email");
-//   const phone = document.getElementById("phone");
+document.addEventListener("DOMContentLoaded", function () {
+  const signinBtn = document.getElementById("signinBtn");
+  const firstName = document.getElementById("firstname");
+  const secondName = document.getElementById("secondName");
+  const email = document.getElementById("email");
+  const phone = document.getElementById("phone");
 
-//   signinBtn.addEventListener("click", function () {
-//     firstName.style.maxHeight = "0";
-//     secondName.style.maxHeight = "0";
-//     email.style.maxHeight = "0";
-//     phone.style.maxHeight = "0";
-//     title.innerHTML = "Sign In";
-//     signupBtn.classList.add("disable");
-//     signinBtn.classList.remove("disable");
-//   });
+  signinBtn.addEventListener("click", function () {
+    firstName.style.maxHeight = "0";
+    secondName.style.maxHeight = "0";
+    email.style.maxHeight = "0";
+    phone.style.maxHeight = "0";
+    title.innerHTML = "Sign In";
+    signupBtn.classList.add("disable");
+    signinBtn.classList.remove("disable");
+  });
 
-//   signupBtn.addEventListener("click", function () {
-//     firstName.style.maxHeight = "60px";
-//     secondName.style.maxHeight = "60px";
-//     email.style.maxHeight = "60px";
-//     phone.style.maxHeight = "60px";
-//     title.innerHTML = "Sign Up";
-//     signupBtn.classList.remove("disable");
-//     signinBtn.classList.add("disable");
-//   });
-// });
+  signupBtn.addEventListener("click", function () {
+    firstName.style.maxHeight = "60px";
+    secondName.style.maxHeight = "60px";
+    email.style.maxHeight = "60px";
+    phone.style.maxHeight = "60px";
+    title.innerHTML = "Sign Up";
+    signupBtn.classList.remove("disable");
+    signinBtn.classList.add("disable");
+  });
+});
 
 function addTask() {
   if (inputBox.value === "") {
