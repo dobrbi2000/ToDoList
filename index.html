@@ -20,34 +20,40 @@
   <body>
     <div class="logon-container">
       <div class="form-box">
-        <h1>Sign Up</h1>
-        <form>
+        <h1 id="title">Sign Up</h1>
+        <form id="logonForm">
           <div class="input-group">
-            <div class="input-field">
+            <div id="firstName" class="input-field">
               <i class="fa-solid fa-user"></i>
-              <input type="first-name" placeholder="First name" />
+              <input type="text" placeholder="First name" />
             </div>
-            <div class="input-field">
+            <div id="secondName" class="input-field">
               <i class="fa-solid fa-user"></i>
-              <input type="second-name" placeholder="Second name" />
+              <input type="text" placeholder="Second name" />
             </div>
-            <div class="input-field">
+            <div id="login" class="input-field">
               <i class="fa-regular fa-user"></i>
               <input type="login" placeholder="Login" />
             </div>
-            <div class="input-field">
+            <div id="password" class="input-field">
               <i class="fa-solid fa-lock"></i>
               <input type="password" placeholder="Password" />
             </div>
-            <div class="input-field">
+            <div id="email" class="input-field">
               <i class="fa-solid fa-envelope"></i>
               <input type="email" placeholder="Email" />
             </div>
-            <div class="input-field">
+            <div id="phone" class="input-field">
               <i class="fa-solid fa-phone"></i>
-              <input type="phone" placeholder="Phone +79000000000" />
+              <input type="tel" placeholder="Phone +79000000000" />
             </div>
             <p>Lost password <a href="#">Click here!</a></p>
+          </div>
+          <div class="btn-field">
+            <button id="signupBtn" type="button">Sign up</button>
+            <button id="signinBtn" type="button" class="disable">
+              Sign in
+            </button>
           </div>
         </form>
       </div>
@@ -57,7 +63,7 @@
         <h2>To-Do List <img src="images/icon.png" alt="" /></h2>
         <div class="row">
           <input type="text" id="input-box" placeholder="Add your text" />
-          <button onclick="addTask()">Add</button>
+          <button class="add-task-btn" onclick="addTask()">Add</button>
         </div>
         <ul id="list-todo-app-container"></ul>
       </div>
