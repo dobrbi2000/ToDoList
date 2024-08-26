@@ -5,7 +5,8 @@
   box-sizing: border-box;
 }
 
-.container {
+.todo-app-container {
+  /* display: none; */
   width: 100%;
   min-height: 100vh;
   background: linear-gradient(135deg, #153677, #4e085f);
@@ -46,7 +47,7 @@ input {
   padding: 10px;
   font-size: 14px;
 }
-button {
+.add-task-btn {
   border: none;
   outline: none;
   padding: 16px 50px;
@@ -98,4 +99,95 @@ ul li span {
 }
 ul li span:hover {
   background: #edeef0;
+}
+
+.logon-container {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #153677, #4e085f);
+  background-position: center;
+  background-size: cover;
+}
+
+.form-box {
+  width: 90%;
+  max-width: 450px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 50px 60px 70px;
+  text-align: center;
+}
+.form-box h1 {
+  font-size: 30px;
+  margin-bottom: 60px;
+  color: #002765;
+  position: relative;
+}
+.form-box h1::after {
+  content: "";
+  width: 60px;
+  height: 4px;
+  background: #002765;
+  border-radius: 3px;
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.logon-container .form-box .input-group .input-field {
+  background: #eaeaea;
+  margin: 10px 0;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  max-height: 65px;
+  transition: max-height 0.5s;
+  overflow: hidden;
+}
+.logon-container .form-box .input-group .input-field input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 14px 12px;
+}
+.input-field i {
+  margin-left: 10px;
+  color: #999;
+  width: 20px;
+}
+form p {
+  text-align: left;
+  font-size: 12px;
+}
+form p a {
+  text-decoration: none;
+  color: #3c00a0;
+}
+.btn-field {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.btn-field button {
+  flex-basis: 48%;
+  background: #3c00a0;
+  color: #fff;
+  height: 40px;
+  border-radius: 20px;
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  transition: background 1s;
+}
+.btn-field button.disable {
+  background: #eaeaea;
+  color: #555;
+}
+.input-group {
+  margin-bottom: 30px;
 }
