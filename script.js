@@ -1,6 +1,6 @@
 const inputBox = document.getElementById("input-box");
 const listContainer = document.getElementById("list-todo-app-container");
-
+let isSignUpMode = true;
 //auth
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -42,15 +42,23 @@ document
   .getElementById("logonForm")
   .addEventListener("submit", function (event) {
     event.preventDefault();
-    const userData = {
-      first_name: document.querySelector("#firstName input").value,
-      second_name: document.querySelector("#secondName input").value,
-      login: document.querySelector("#login input").value,
-      email: document.querySelector("#email input").value,
-      password: document.querySelector("#password input").value,
-      phone: document.querySelector("#phone input").value,
-    };
-    createUser(userData);
+    if (isSignUpMode) {
+      const userData = {
+        first_name: document.querySelector("#firstName input").value,
+        second_name: document.querySelector("#secondName input").value,
+        login: document.querySelector("#login input").value,
+        email: document.querySelector("#email input").value,
+        password: document.querySelector("#password input").value,
+        phone: document.querySelector("#phone input").value,
+      };
+      createUser(userData);
+    } else {
+      const loginData = {
+        login: document.querySelector("#login input").value,
+        password: document.querySelector("#password input").value,
+      };
+      loginUser(loginData);
+    }
   });
 
 function createUser(userData) {
@@ -74,14 +82,36 @@ function createUser(userData) {
     });
 }
 
+function loginUser(loginData) {
+  fetch("https://ya-praktikum.tech/api/v2/auth/signin", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(loginData),
+  })
+    .then((response) => {
+      if (response.ok) {
+        console.log("Вход выполнен успешно");
+        showTodoApp();
+      } else {
+        console.log("Ошибка при входе, статус: ", response.status);
+      }
+    })
+    .catch((error) => {
+      console.error("Ошибка при входе:", error);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const signinBtn = document.getElementById("signinBtn");
-  const firstName = document.getElementById("firstname");
+  const firstName = document.getElementById("firstName");
   const secondName = document.getElementById("secondName");
   const email = document.getElementById("email");
   const phone = document.getElementById("phone");
 
   signinBtn.addEventListener("click", function () {
+    isSignUpMode = false;
     firstName.style.maxHeight = "0";
     secondName.style.maxHeight = "0";
     email.style.maxHeight = "0";
@@ -92,6 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   signupBtn.addEventListener("click", function () {
+    isSignUpMode = true;
     firstName.style.maxHeight = "60px";
     secondName.style.maxHeight = "60px";
     email.style.maxHeight = "60px";
