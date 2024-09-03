@@ -4,9 +4,11 @@
   font-family: "Poppins", sans-serif;
   box-sizing: border-box;
 }
+.hidden {
+  display: none;
+}
 
 .page-todo {
-  display: none;
   width: 100%;
   min-height: 100vh;
   background: linear-gradient(135deg, #153677, #4e085f);
@@ -190,4 +192,59 @@ form p a {
 }
 .input-group {
   margin-bottom: 30px;
+}
+
+.page-signin {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #153677, #4e085f);
+  background-position: center;
+  background-size: cover;
+}
+
+.form-box-signin {
+  width: 90%;
+  max-width: 450px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 50px 60px 70px;
+  text-align: center;
+}
+.form-box-signin h1 {
+  font-size: 30px;
+  margin-bottom: 60px;
+  color: #002765;
+  position: relative;
+}
+.form-box-signin h1::after {
+  content: "";
+  width: 60px;
+  height: 4px;
+  background: #002765;
+  border-radius: 3px;
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.page-signin .form-box-signin .input-group .input-field {
+  background: #eaeaea;
+  margin: 10px 0;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  /* max-height: 65px;
+  transition: max-height 0.5s;
+  overflow: hidden; */
+}
+.page-signin .form-box-signin .input-group .input-field input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  padding: 14px 12px;
 }
