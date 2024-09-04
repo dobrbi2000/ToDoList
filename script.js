@@ -144,25 +144,6 @@ function checkUserAuth() {
   );
 }
 
-// fetch("https://ya-praktikum.tech/api/v2/auth/user", {
-//   method: "GET",
-//   headers: {
-//     "Content-Type": "application/json",
-//   },
-//   credentials: "include",
-// })
-//   .then((response) => {
-//     if (response.ok) {
-//       pageTodo();
-//     } else {
-//       pageSignUp();
-//     }
-//   })
-//   .catch((error) => {
-//     console.error("Error checking authorization:", error);
-//     pageSignUp();
-//   });
-
 function addTask() {
   if (inputBox.value === "") {
     alert("You have to write something!");
