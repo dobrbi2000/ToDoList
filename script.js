@@ -90,7 +90,7 @@ function loginUser() {
   }
 }
 
-function request({ method = "POST", suffix, body, credentials = "same-origin" }, callback) {
+function request({ method = "POST", suffix, body, credentials }, callback) {
   const headers = {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -107,10 +107,19 @@ function request({ method = "POST", suffix, body, credentials = "same-origin" },
     credentials: credentials,
   })
     .then((response) => {
+      const contentType = response.headers.get("content-type");
       if (!response.ok) {
-        return response.json().then((data) => callback(false));
+        if (contentType && contentType.includes("application/json")) {
+          return response.json().then(() => callback(false));
+        } else {
+          return response.text().then(() => callback(false));
+        }
       }
-      return response.json().then((data) => callback(true));
+      if (contentType && contentType.includes("application/json")) {
+        return response.json().then(() => callback(true));
+      } else {
+        return response.text().then(() => callback(true));
+      }
     })
     .catch((error) => {
       console.error("Request failed:", error);
