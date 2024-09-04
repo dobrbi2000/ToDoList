@@ -1,7 +1,16 @@
+let inputBox;
+let listContainer;
+
 document.addEventListener("DOMContentLoaded", () => {
+  inputBox = document.getElementById("input-box");
+  listContainer = document.getElementById("list-todo-app-container");
+
   checkUserAuth();
   createNewUser();
   loginUser();
+  inputBox.addEventListener("keydown", handleEvent);
+  listContainer.addEventListener("click", handleEvent);
+  showTasks();
 });
 
 function hideAllPages(idToShow) {
@@ -81,7 +90,7 @@ function loginUser() {
   }
 }
 
-function request({ method = "POST", suffix, body }, callback) {
+function request({ method = "POST", suffix, body, credentials = "same-origin" }, callback) {
   const headers = {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -95,42 +104,91 @@ function request({ method = "POST", suffix, body }, callback) {
     method: method,
     headers: headers,
     body: body,
+    credentials: credentials,
   })
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
+        return response.json().then((data) => callback(false));
       }
-      return response.json();
-    })
-    .then((data) => {
-      console.log("Response from server:", data);
-      if (callback) {
-        callback();
-      }
+      return response.json().then((data) => callback(true));
     })
     .catch((error) => {
       console.error("Request failed:", error);
-      throw error;
+      callback(false);
     });
 }
 
 function checkUserAuth() {
-  fetch("https://ya-praktikum.tech/api/v2/auth/user", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
+  request(
+    {
+      method: "GET",
+      suffix: "auth/user",
+      credentials: "include",
     },
-    credentials: "include",
-  })
-    .then((response) => {
-      if (response.ok) {
+    (ok) => {
+      if (ok) {
         pageTodo();
       } else {
         pageSignUp();
       }
-    })
-    .catch((error) => {
-      console.error("Ошибка при проверке авторизации:", error);
-      pageSignUp();
-    });
+    }
+  );
+}
+
+// fetch("https://ya-praktikum.tech/api/v2/auth/user", {
+//   method: "GET",
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+//   credentials: "include",
+// })
+//   .then((response) => {
+//     if (response.ok) {
+//       pageTodo();
+//     } else {
+//       pageSignUp();
+//     }
+//   })
+//   .catch((error) => {
+//     console.error("Error checking authorization:", error);
+//     pageSignUp();
+//   });
+
+function addTask() {
+  if (inputBox.value === "") {
+    alert("You have to write something!");
+  } else {
+    let li = document.createElement("li");
+    li.innerHTML = inputBox.value;
+    listContainer.appendChild(li);
+    let span = document.createElement("span");
+    span.innerHTML = "\u00d7";
+    li.appendChild(span);
+  }
+  inputBox.value = "";
+  saveData();
+}
+
+function handleEvent(event) {
+  const { type, target, key } = event;
+  if (type === "keydown" && key === "Enter") {
+    event.preventDefault();
+    addTask();
+  }
+  if (type === "click") {
+    if (target.tagName === "LI") {
+      target.classList.toggle("checked");
+    } else if (target.tagName === "SPAN") {
+      target.parentElement.remove();
+    }
+  }
+  saveData();
+}
+
+function saveData() {
+  localStorage.setItem("data", listContainer.innerHTML);
+}
+
+function showTasks() {
+  listContainer.innerHTML = localStorage.getItem("data");
 }
