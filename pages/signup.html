@@ -1,0 +1,38 @@
+<div class="page-signup">
+  <div class="form-box-signup">
+    <h1 name="title">Sign Up</h1>
+    <form method="post" id="logonForm" action="auth/signup">
+      <div class="input-group">
+        <div class="input-field">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" name="first_name" placeholder="First name" />
+        </div>
+        <div class="input-field">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" name="second_name" placeholder="Second name" />
+        </div>
+        <div class="input-field">
+          <i class="fa-regular fa-user"></i>
+          <input type="login" name="login" placeholder="Login" />
+        </div>
+        <div class="input-field">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" name="password" placeholder="Password" />
+        </div>
+        <div class="input-field">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" name="email" placeholder="Email" />
+        </div>
+        <div class="input-field">
+          <i class="fa-solid fa-phone"></i>
+          <input type="tel" name="phone" placeholder="Phone +79000000000" />
+        </div>
+        <p>Lost password <a href="#">Click here!</a></p>
+      </div>
+      <div class="btn-field">
+        <button class="btn signup-btn" type="submit">Sign up</button>
+        <button class="btn signin-btn disable" type="button" onclick="pageSignIn()">Sign in</button>
+      </div>
+    </form>
+  </div>
+</div>

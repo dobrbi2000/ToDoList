@@ -12,77 +12,13 @@
   </head>
 
   <body>
-    <div class="hidden page page-todo">
-      <div class="todo-app">
-        <h2>To-Do List <img src="images/icon.png" alt="" /></h2>
-        <div class="row">
-          <input type="text" id="input-box" placeholder="Add your text" />
-          <button class="add-task-btn" onclick="addTask()">Add</button>
-        </div>
-        <ul id="list-todo-app-container"></ul>
-      </div>
-    </div>
-
-    <div class="hidden page page-signup">
-      <div class="form-box-signup">
-        <h1 name="title">Sign Up</h1>
-        <form method="post" id="logonForm" action="auth/signup">
-          <div class="input-group">
-            <div class="input-field">
-              <i class="fa-solid fa-user"></i>
-              <input type="text" name="first_name" placeholder="First name" />
-            </div>
-            <div class="input-field">
-              <i class="fa-solid fa-user"></i>
-              <input type="text" name="second_name" placeholder="Second name" />
-            </div>
-            <div class="input-field">
-              <i class="fa-regular fa-user"></i>
-              <input type="login" name="login" placeholder="Login" />
-            </div>
-            <div class="input-field">
-              <i class="fa-solid fa-lock"></i>
-              <input type="password" name="password" placeholder="Password" />
-            </div>
-            <div class="input-field">
-              <i class="fa-solid fa-envelope"></i>
-              <input type="email" name="email" placeholder="Email" />
-            </div>
-            <div class="input-field">
-              <i class="fa-solid fa-phone"></i>
-              <input type="tel" name="phone" placeholder="Phone +79000000000" />
-            </div>
-            <p>Lost password <a href="#">Click here!</a></p>
-          </div>
-          <div class="btn-field">
-            <button class="btn signup-btn" type="submit">Sign up</button>
-            <button class="btn signin-btn disable" type="button" onclick="pageSignIn()">Sign in</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="hidden page page-signin">
-      <div class="form-box-signin">
-        <h1 name="title">Sign In</h1>
-        <form method="post" id="loginForm" action="auth/signin">
-          <div class="input-group">
-            <div class="input-field">
-              <i class="fa-regular fa-user"></i>
-              <input type="text" name="login" placeholder="Login" />
-            </div>
-            <div class="input-field">
-              <i class="fa-solid fa-lock"></i>
-              <input type="password" name="password" placeholder="Password" />
-            </div>
-          </div>
-          <div class="btn-field">
-            <button class="btn signup-btn disable" type="button" onclick="pageSignUp()">Sign up</button>
-            <button class="btn signin-btn" type="submit">Sign in</button>
-          </div>
-        </form>
-      </div>
-    </div>
+    <div id="app"></div>
+    <!-- app
+    <div class="hidden page page-todo" data-url="./pages/todo.html"></div>
+    <!-- reg -->
+    <!-- <div class="hidden page page-signup" data-url="./pages/signup.html"></div> -->
+    <!-- log -->
+    <!-- <div class="hidden page page-signin" data-url="./pages/signin.html"></div> -->
 
     <script src="script.js"></script>
   </body>

@@ -1,45 +1,52 @@
-let inputBox;
-let listContainer;
+main();
 
-document.addEventListener("DOMContentLoaded", () => {
-  inputBox = document.getElementById("input-box");
-  listContainer = document.getElementById("list-todo-app-container");
-
-  checkUserAuth();
-  createNewUser();
-  loginUser();
-  inputBox.addEventListener("keydown", handleEvent);
-  listContainer.addEventListener("click", handleEvent);
-  showTasks();
-});
-
-function hideAllPages(idToShow) {
-  const pages = document.querySelectorAll(".page");
-  pages.forEach((page) => {
-    if (page.matches(idToShow)) {
-      page.classList.remove("hidden");
-    } else {
-      page.classList.add("hidden");
+async function main() {
+  window.addEventListener("DOMContentLoaded", async () => {
+    try {
+      const response = await request({
+        method: "GET",
+        suffix: "auth/user",
+      });
+      if (response) {
+        pages.todo();
+      } else {
+        throw new Error("Authentication failed");
+      }
+    } catch (error) {
+      pages.signup();
     }
   });
 }
-//registration
-function pageSignUp() {
-  hideAllPages(".page-signup");
-}
-//login
-function pageSignIn() {
-  hideAllPages(".page-signin");
+
+async function loadPage(pageName) {
+  const result = await fetch(`./pages/${pageName}.html`);
+  const text = await result.text();
+  return text;
 }
 
-function pageTodo() {
-  hideAllPages(".page-todo");
-}
+const pages = {
+  todo: async () => {
+    const text = await loadPage("todo");
+    app.innerHTML = text;
+  },
+  signup: async () => {
+    const text = await loadPage("signup");
+    app.innerHTML = text;
+    createNewUser();
+    addClick(".signin-btn", pages.signin);
+  },
+  signin: async () => {
+    const text = await loadPage("signin");
+    app.innerHTML = text;
+    loginUser();
+    addClick(".signup-btn", pages.signup);
+  },
+};
 
 function createNewUser() {
   const form = document.getElementById("logonForm");
   if (form) {
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const userData = {};
@@ -49,24 +56,39 @@ function createNewUser() {
 
       console.log("User information sending to API:", userData);
 
-      request(
-        {
+      try {
+        const result = await request({
           suffix: form.getAttribute("action"),
           method: form.getAttribute("method").toUpperCase(),
-          body: JSON.stringify(userData),
-        },
-        () => pageTodo()
-      );
+          body: userData,
+        });
+        if (result) {
+          pages.todo();
+        } else {
+          console.error("Failed to create user");
+        }
+      } catch (error) {
+        console.error("Request failed:", error);
+      }
     });
   } else {
     console.error("logonForm not found");
   }
 }
 
+function addClick(selector, action) {
+  const button = document.querySelector(selector);
+  if (button) {
+    button.addEventListener("click", action);
+  } else {
+    console.error(`Button with selector "${selector}" not found`);
+  }
+}
+
 function loginUser() {
   const form = document.getElementById("loginForm");
   if (form) {
-    form.addEventListener("submit", (event) => {
+    form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
       const userData = {};
@@ -75,73 +97,74 @@ function loginUser() {
       });
 
       console.log("User information sending to API:", userData);
-
-      request(
-        {
+      try {
+        const result = await request({
           suffix: form.getAttribute("action"),
           method: form.getAttribute("method").toUpperCase(),
-          body: JSON.stringify(userData),
-        },
-        () => pageTodo()
-      );
+          body: userData,
+        });
+        if (result) {
+          pages.todo();
+        } else {
+          pages.signup();
+        }
+      } catch (error) {
+        pages.signup();
+      }
     });
   } else {
+    //
     console.error("loginForm not found");
   }
 }
 
-function request({ method = "POST", suffix, body, credentials }, callback) {
+// let inputBox;
+// let listContainer;
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   inputBox = document.getElementById("input-box");
+//   listContainer = document.getElementById("list-todo-app-container");
+
+//   checkUserAuth();
+//   createNewUser();
+//   loginUser();
+//   inputBox.addEventListener("keydown", handleEvent);
+//   listContainer.addEventListener("click", handleEvent);
+//   showTasks();
+// });
+
+async function request({ method = "POST", suffix, body, credentials = "include" }) {
   const headers = {
     Accept: "application/json",
     "Content-Type": "application/json",
   };
 
   const url = `https://ya-praktikum.tech/api/v2/${suffix}`;
-
   console.log("URL API:", url);
 
-  fetch(url, {
-    method: method,
-    headers: headers,
-    body: body,
-    credentials: credentials,
-  })
-    .then((response) => {
-      const contentType = response.headers.get("content-type");
-      if (!response.ok) {
-        if (contentType && contentType.includes("application/json")) {
-          return response.json().then(() => callback(false));
-        } else {
-          return response.text().then(() => callback(false));
-        }
-      }
-      if (contentType && contentType.includes("application/json")) {
-        return response.json().then(() => callback(true));
-      } else {
-        return response.text().then(() => callback(true));
-      }
-    })
-    .catch((error) => {
-      console.error("Request failed:", error);
-      callback(false);
+  try {
+    const response = await fetch(url, {
+      method: method,
+      headers: headers,
+      body: JSON.stringify(body),
+      credentials: credentials,
     });
-}
-
-function checkUserAuth() {
-  request(
-    {
-      method: "GET",
-      suffix: "auth/user",
-      credentials: "include",
-    },
-    (ok) => {
-      if (ok) {
-        pageTodo();
-      } else {
-        pageSignUp();
-      }
+    console.log("Response from Request:", response);
+    const contentType = response.headers.get("content-type");
+    if (!response.ok) {
+      throw new Error("Request failed with status " + response.status);
     }
-  );
+
+    if (contentType && contentType.includes("application/json")) {
+      await response.json();
+    } else {
+      await response.text();
+    }
+    return true;
+  } catch (error) {
+    console.error("Request failed:", error);
+    return false;
+  }
 }
 
 function addTask() {
