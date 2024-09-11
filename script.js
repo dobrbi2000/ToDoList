@@ -1,3 +1,4 @@
+const app = document.getElementById("app");
 main();
 
 async function main() {
@@ -26,20 +27,41 @@ async function loadPage(pageName) {
 
 const pages = {
   todo: async () => {
-    const text = await loadPage("todo");
-    app.innerHTML = text;
+    try {
+      const text = await loadPage("todo");
+      app.innerHTML = text;
+
+      const inputBox = document.getElementById("input-box");
+      const listContainer = document.getElementById("list-todo-app-container");
+
+      setupEventListeners(inputBox, listContainer);
+      showTasks(listContainer);
+    } catch (error) {
+      console.error("Error loading the todo page:", error);
+      app.innerHTML = "<p>Error loading the todo page. Please try again later.</p>";
+    }
   },
   signup: async () => {
-    const text = await loadPage("signup");
-    app.innerHTML = text;
-    createNewUser();
-    addClick(".signin-btn", pages.signin);
+    try {
+      const text = await loadPage("signup");
+      app.innerHTML = text;
+      createNewUser();
+      addClick(".signin-btn", pages.signin);
+    } catch (error) {
+      console.error("Error loading the signup page:", error);
+      app.innerHTML = "<p>Error loading the signup page. Please try again later.</p>";
+    }
   },
   signin: async () => {
-    const text = await loadPage("signin");
-    app.innerHTML = text;
-    loginUser();
-    addClick(".signup-btn", pages.signup);
+    try {
+      const text = await loadPage("signin");
+      app.innerHTML = text;
+      loginUser();
+      addClick(".signup-btn", pages.signup);
+    } catch (error) {
+      console.error("Error loading the signin page:", error);
+      app.innerHTML = "<p>Error loading the signin page. Please try again later.</p>";
+    }
   },
 };
 
@@ -118,21 +140,6 @@ function loginUser() {
   }
 }
 
-// let inputBox;
-// let listContainer;
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   inputBox = document.getElementById("input-box");
-//   listContainer = document.getElementById("list-todo-app-container");
-
-//   checkUserAuth();
-//   createNewUser();
-//   loginUser();
-//   inputBox.addEventListener("keydown", handleEvent);
-//   listContainer.addEventListener("click", handleEvent);
-//   showTasks();
-// });
-
 async function request({ method = "POST", suffix, body, credentials = "include" }) {
   const headers = {
     Accept: "application/json",
@@ -167,41 +174,46 @@ async function request({ method = "POST", suffix, body, credentials = "include" 
   }
 }
 
-function addTask() {
+function addTask(inputBox, listContainer) {
   if (inputBox.value === "") {
     alert("You have to write something!");
   } else {
     let li = document.createElement("li");
-    li.innerHTML = inputBox.value;
+    li.textContent = inputBox.value;
     listContainer.appendChild(li);
     let span = document.createElement("span");
     span.innerHTML = "\u00d7";
     li.appendChild(span);
   }
   inputBox.value = "";
-  saveData();
+  saveData(listContainer);
 }
 
-function handleEvent(event) {
+function handleEvent(event, inputBox, listContainer) {
   const { type, target, key } = event;
   if (type === "keydown" && key === "Enter") {
     event.preventDefault();
-    addTask();
+    addTask(inputBox, listContainer);
   }
-  if (type === "click") {
-    if (target.tagName === "LI") {
-      target.classList.toggle("checked");
-    } else if (target.tagName === "SPAN") {
-      target.parentElement.remove();
-    }
+  if (type === "click" && target.tagName === "LI") {
+    target.classList.toggle("checked");
+  } else if (type === "click" && target.tagName === "SPAN") {
+    target.parentElement.remove();
   }
-  saveData();
+
+  saveData(listContainer);
 }
 
-function saveData() {
+function setupEventListeners(inputBox, listContainer) {
+  document.getElementById("add-task-btn").addEventListener("click", () => addTask(inputBox, listContainer));
+  listContainer.addEventListener("click", (event) => handleEvent(event, inputBox, listContainer));
+  inputBox.addEventListener("keydown", (event) => handleEvent(event, inputBox, listContainer));
+}
+
+function saveData(listContainer) {
   localStorage.setItem("data", listContainer.innerHTML);
 }
 
-function showTasks() {
+function showTasks(listContainer) {
   listContainer.innerHTML = localStorage.getItem("data");
 }
