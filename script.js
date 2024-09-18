@@ -1,26 +1,26 @@
 const app = document.getElementById("app");
-main();
 
-async function main() {
-  window.addEventListener("DOMContentLoaded", async () => {
-    try {
-      const response = await request({
-        method: "GET",
-        suffix: "auth/user",
-      });
-      if (response) {
-        pages.todo();
-      } else {
-        throw new Error("Authentication failed");
-      }
-    } catch (error) {
-      pages.signup();
+window.addEventListener("DOMContentLoaded", async () => {
+  try {
+    const response = await request({
+      method: "GET",
+      suffix: "auth/user",
+    });
+    if (response) {
+      pages.todo();
+    } else {
+      throw new Error("Authentication failed");
     }
-  });
-}
+  } catch (error) {
+    pages.signup();
+  }
+});
 
 async function loadPage(pageName) {
   const result = await fetch(`./pages/${pageName}.html`);
+  if (!result.ok) {
+    throw new Error(`Failed to load page: ${pageName}, status: ${result.status}`);
+  }
   const text = await result.text();
   return text;
 }
@@ -30,6 +30,7 @@ const pages = {
     try {
       const text = await loadPage("todo");
       app.innerHTML = text;
+      updateHistory("todo", "ToDo Page", "/todo");
 
       const inputBox = document.getElementById("input-box");
       const listContainer = document.getElementById("list-todo-app-container");
@@ -45,6 +46,7 @@ const pages = {
     try {
       const text = await loadPage("signup");
       app.innerHTML = text;
+      updateHistory("signup", "SignUp Page", "/signup");
       createNewUser();
       addClick(".signin-btn", pages.signin);
     } catch (error) {
@@ -56,6 +58,7 @@ const pages = {
     try {
       const text = await loadPage("signin");
       app.innerHTML = text;
+      updateHistory("signin", "SignIn Page", "/signin");
       loginUser();
       addClick(".signup-btn", pages.signup);
     } catch (error) {
@@ -64,6 +67,34 @@ const pages = {
     }
   },
 };
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const path = window.location.pathname;
+  if (path === "/todo") {
+    pages.todo();
+  } else if (path === "/signup") {
+    pages.signup();
+  } else if (path === "/signin") {
+    pages.signin();
+  } else {
+    pages.signup();
+  }
+});
+
+window.addEventListener("popstate", (event) => {
+  if (event.state) {
+    const page = event.state.page;
+    if (page === "todo") {
+      pages.todo();
+    } else if (page === "signup") {
+      pages.signup();
+    } else if (page === "signin") {
+      pages.signin();
+    }
+  } else {
+    pages.signup();
+  }
+});
 
 function createNewUser() {
   const form = document.getElementById("logonForm");
@@ -216,4 +247,8 @@ function saveData(listContainer) {
 
 function showTasks(listContainer) {
   listContainer.innerHTML = localStorage.getItem("data");
+}
+
+function updateHistory(pageName, pageTitle, pagePath) {
+  history.pushState({ page: pageName }, pageTitle, pagePath);
 }
