@@ -142,7 +142,7 @@ function createNewUser() {
   }
 }
 
-function addClick(selector, action) {
+function addClick(selector: string, action: () => void): void {
   const button = document.querySelector(selector);
   if (button) {
     button.addEventListener("click", action);
@@ -273,6 +273,6 @@ function showTasks(listContainer: HTMLElement): void {
   listContainer.innerHTML = storeData !== null ? storeData : "";
 }
 
-function updateHistory(pageName, pageTitle, pagePath) {
+function updateHistory(pageName: string, pageTitle: string, pagePath: string) {
   history.pushState({ page: pageName }, pageTitle, pagePath);
 }
