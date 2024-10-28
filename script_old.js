@@ -252,3 +252,5 @@
 // function updateHistory(pageName, pageTitle, pagePath) {
 //   history.pushState({ page: pageName }, pageTitle, pagePath);
 // }
+
+// console.log(process.argv);
