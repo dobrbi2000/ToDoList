@@ -1,16 +1,16 @@
-import signinPage from './pages/signin.html?raw'; //файл декларация или типы Vite+raw+ts
-import signupPage from './pages/signup.html?raw';
-import todoPage from './pages/todo.html?raw';
+// import signinPage from './pages/signin.html?raw'; //файл декларация или типы Vite+raw+ts
+// import signupPage from './pages/signup.html?raw';
+// import todoPage from './pages/todo.html?raw';
 
-//image
-import iconSrc from './images/icon.png';
+// //image
+// import iconSrc from './images/icon.png';
 
-function setImage() {
-  const imgElement = document.querySelector('.todo-app h2 img') as HTMLImageElement;
-  if (imgElement) {
-    imgElement.src = iconSrc;
-  }
-}
+// function setImage() {
+//   const imgElement = document.querySelector('.todo-app h2 img') as HTMLImageElement;
+//   if (imgElement) {
+//     imgElement.src = iconSrc;
+//   }
+// }
 
 const app = document.getElementById('app') as HTMLElement;
 
@@ -41,38 +41,53 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// async function loadPage(pageName: string): string {
-//   // const result: Response = await fetch(`/pages/${pageName}.html`);
-//   // if (!result.ok) {
-//   //   throw new Error(`Failed to load page: ${pageName}, status: ${result.status}`);
-//   // }
-//   // const text = await result.text();
-//   return pages[pageName];
-// }
+async function loadPage(pageName: string): Promise<string> {
+  const result: Response = await fetch(`/pages/${pageName}.html`);
+  if (!result.ok) {
+    throw new Error(`Failed to load page: ${pageName}, status: ${result.status}`);
+  }
+  const text = await result.text();
+  return text;
+}
 
 const pages = {
-  todo: () => {
-    app.innerHTML = todoPage;
-    setImage();
-    updateHistory('todo', 'ToDo Page', '/todo');
-
-    const inputBox = document.getElementById('input-box') as HTMLInputElement;
-    const listContainer = document.getElementById('list-todo-app-container') as HTMLElement;
-
-    setupEventListeners(inputBox, listContainer);
-    showTasks(listContainer);
+  todo: async () => {
+    try {
+      const text = await loadPage('todo');
+      app.innerHTML = text;
+      updateHistory('todo', 'ToDo Page', '/todo');
+      const inputBox = document.getElementById('input-box') as HTMLInputElement;
+      const listContainer = document.getElementById('list-todo-app-container') as HTMLElement;
+      setupEventListeners(inputBox, listContainer);
+      showTasks(listContainer);
+    } catch (error) {
+      console.error('Error loading the todo page:', error);
+      app.innerHTML = '<p>Error loading the todo page. Please try again later.</p>';
+    }
   },
-  signup: () => {
-    app.innerHTML = signupPage;
-    updateHistory('signup', 'SignUp Page', '/signup');
-    createNewUser();
-    addClick('.signin-btn', pages.signin);
+  signup: async () => {
+    try {
+      const text = await loadPage('signup');
+      app.innerHTML = text;
+      updateHistory('signup', 'SignUp Page', '/signup');
+      createNewUser();
+      addClick('.signin-btn', pages.signin);
+    } catch (error) {
+      console.error('Error loading the signup page:', error);
+      app.innerHTML = '<p>Error loading the signup page. Please try again later.</p>';
+    }
   },
-  signin: () => {
-    app.innerHTML = signinPage;
-    updateHistory('signin', 'SignIn Page', '/signin');
-    loginUser();
-    addClick('.signup-btn', pages.signup);
+  signin: async () => {
+    try {
+      const text = await loadPage('signin');
+      app.innerHTML = text;
+      updateHistory('signin', 'SignIn Page', '/signin');
+      loginUser();
+      addClick('.signup-btn', pages.signup);
+    } catch (error) {
+      console.error('Error loading the signin page:', error);
+      app.innerHTML = '<p>Error loading the signin page. Please try again later.</p>';
+    }
   },
 };
 
