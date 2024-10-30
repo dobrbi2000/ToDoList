@@ -1,29 +1,5 @@
-// import signinPage from './pages/signin.html?raw'; //файл декларация или типы Vite+raw+ts
-// import signupPage from './pages/signup.html?raw';
-// import todoPage from './pages/todo.html?raw';
-
-// //image
-// import iconSrc from './images/icon.png';
-
-// function setImage() {
-//   const imgElement = document.querySelector('.todo-app h2 img') as HTMLImageElement;
-//   if (imgElement) {
-//     imgElement.src = iconSrc;
-//   }
-// }
-
-const app = document.getElementById('app') as HTMLElement;
-
-interface RequestParams {
-  method: string | undefined;
-  suffix: string | null;
-  body?: Record<string, any>;
-  credentials?: RequestCredentials;
-}
-
-interface UserData {
-  [key: string]: string;
-}
+import { request } from './src/api';
+import { pages } from './src/pages';
 
 window.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -40,56 +16,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     pages.signup();
   }
 });
-
-async function loadPage(pageName: string): Promise<string> {
-  const result: Response = await fetch(`/pages/${pageName}.html`);
-  if (!result.ok) {
-    throw new Error(`Failed to load page: ${pageName}, status: ${result.status}`);
-  }
-  const text = await result.text();
-  return text;
-}
-
-const pages = {
-  todo: async () => {
-    try {
-      const text = await loadPage('todo');
-      app.innerHTML = text;
-      updateHistory('todo', 'ToDo Page', '/todo');
-      const inputBox = document.getElementById('input-box') as HTMLInputElement;
-      const listContainer = document.getElementById('list-todo-app-container') as HTMLElement;
-      setupEventListeners(inputBox, listContainer);
-      showTasks(listContainer);
-    } catch (error) {
-      console.error('Error loading the todo page:', error);
-      app.innerHTML = '<p>Error loading the todo page. Please try again later.</p>';
-    }
-  },
-  signup: async () => {
-    try {
-      const text = await loadPage('signup');
-      app.innerHTML = text;
-      updateHistory('signup', 'SignUp Page', '/signup');
-      createNewUser();
-      addClick('.signin-btn', pages.signin);
-    } catch (error) {
-      console.error('Error loading the signup page:', error);
-      app.innerHTML = '<p>Error loading the signup page. Please try again later.</p>';
-    }
-  },
-  signin: async () => {
-    try {
-      const text = await loadPage('signin');
-      app.innerHTML = text;
-      updateHistory('signin', 'SignIn Page', '/signin');
-      loginUser();
-      addClick('.signup-btn', pages.signup);
-    } catch (error) {
-      console.error('Error loading the signin page:', error);
-      app.innerHTML = '<p>Error loading the signin page. Please try again later.</p>';
-    }
-  },
-};
 
 document.addEventListener('DOMContentLoaded', async () => {
   const path = window.location.pathname;
@@ -119,172 +45,235 @@ window.addEventListener('popstate', (event) => {
   }
 });
 
-function createNewUser() {
-  const form = document.getElementById('logonForm') as HTMLElement | null;
-  if (form) {
-    form.addEventListener('submit', async (event: Event) => {
-      event.preventDefault();
+// const app = document.getElementById('app') as HTMLElement;
 
-      const userData: UserData = {};
-      document.querySelectorAll<HTMLInputElement>('#logonForm input').forEach((input) => {
-        userData[input.name] = input.value;
-      });
+// interface RequestParams {
+//   method: string | undefined;
+//   suffix: string | null;
+//   body?: Record<string, any>;
+//   credentials?: RequestCredentials;
+// }
 
-      console.log('User information sending to API:', userData);
+// interface UserData {
+//   [key: string]: string;
+// }
 
-      try {
-        const action = form.getAttribute('action');
-        const method = form.getAttribute('method')?.toUpperCase();
-        const result = await request({
-          suffix: action,
-          method: method,
-          body: userData,
-        });
-        if (result) {
-          pages.todo();
-        } else {
-          console.error('Failed to create user');
-        }
-      } catch (error) {
-        console.error('Request failed:', error);
-      }
-    });
-  } else {
-    console.error('logonForm not found');
-  }
-}
+// async function loadPage(pageName: string): Promise<string> {
+//   const result: Response = await fetch(`/pages/${pageName}.html`);
+//   if (!result.ok) {
+//     throw new Error(`Failed to load page: ${pageName}, status: ${result.status}`);
+//   }
+//   const text = await result.text();
+//   return text;
+// }
 
-function addClick(selector: string, action: () => void): void {
-  const button = document.querySelector(selector);
-  if (button) {
-    button.addEventListener('click', action);
-  } else {
-    console.error(`Button with selector "${selector}" not found`);
-  }
-}
+// const pages = {
+//   todo: async () => {
+//     try {
+//       const text = await loadPage('todo');
+//       app.innerHTML = text;
+//       updateHistory('todo', 'ToDo Page', '/todo');
+//       const inputBox = document.getElementById('input-box') as HTMLInputElement;
+//       const listContainer = document.getElementById('list-todo-app-container') as HTMLElement;
+//       setupEventListeners(inputBox, listContainer);
+//       showTasks(listContainer);
+//     } catch (error) {
+//       console.error('Error loading the todo page:', error);
+//       app.innerHTML = '<p>Error loading the todo page. Please try again later.</p>';
+//     }
+//   },
+//   signup: async () => {
+//     try {
+//       const text = await loadPage('signup');
+//       app.innerHTML = text;
+//       updateHistory('signup', 'SignUp Page', '/signup');
+//       createNewUser();
+//       addClick('.signin-btn', pages.signin);
+//     } catch (error) {
+//       console.error('Error loading the signup page:', error);
+//       app.innerHTML = '<p>Error loading the signup page. Please try again later.</p>';
+//     }
+//   },
+//   signin: async () => {
+//     try {
+//       const text = await loadPage('signin');
+//       app.innerHTML = text;
+//       updateHistory('signin', 'SignIn Page', '/signin');
+//       loginUser();
+//       addClick('.signup-btn', pages.signup);
+//     } catch (error) {
+//       console.error('Error loading the signin page:', error);
+//       app.innerHTML = '<p>Error loading the signin page. Please try again later.</p>';
+//     }
+//   },
+// };
 
-async function loginUser(): Promise<void> {
-  const form = document.getElementById('loginForm') as HTMLHtmlElement | null;
-  if (form) {
-    form.addEventListener('submit', async (event: Event) => {
-      event.preventDefault();
+// function createNewUser() {
+//   const form = document.getElementById('logonForm') as HTMLElement | null;
+//   if (form) {
+//     form.addEventListener('submit', async (event: Event) => {
+//       event.preventDefault();
 
-      const userData: UserData = {};
-      document.querySelectorAll<HTMLInputElement>('#loginForm input').forEach((input) => {
-        userData[input.name] = input.value;
-      });
+//       const userData: UserData = {};
+//       document.querySelectorAll<HTMLInputElement>('#logonForm input').forEach((input) => {
+//         userData[input.name] = input.value;
+//       });
 
-      console.log('User information sending to API:', userData);
-      try {
-        const action = form.getAttribute('action');
-        const method = form.getAttribute('method')?.toUpperCase();
-        const result = await request({
-          suffix: action,
-          method: method,
-          body: userData,
-        });
-        if (result) {
-          pages.todo();
-        } else {
-          pages.signup();
-        }
-      } catch (error) {
-        console.error('Error during login:', error);
-        pages.signup();
-      }
-    });
-  } else {
-    console.error('loginForm not found');
-  }
-}
+//       console.log('User information sending to API:', userData);
 
-async function request({ method = 'POST', suffix, body, credentials = 'include' }: RequestParams): Promise<boolean> {
-  const headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  };
+//       try {
+//         const action = form.getAttribute('action');
+//         const method = form.getAttribute('method')?.toUpperCase();
+//         const result = await request({
+//           suffix: action,
+//           method: method,
+//           body: userData,
+//         });
+//         if (result) {
+//           pages.todo();
+//         } else {
+//           console.error('Failed to create user');
+//         }
+//       } catch (error) {
+//         console.error('Request failed:', error);
+//       }
+//     });
+//   } else {
+//     console.error('logonForm not found');
+//   }
+// }
 
-  const url = `https://ya-praktikum.tech/api/v2/${suffix}`;
-  console.log('URL API:', url);
+// function addClick(selector: string, action: () => void): void {
+//   const button = document.querySelector(selector);
+//   if (button) {
+//     button.addEventListener('click', action);
+//   } else {
+//     console.error(`Button with selector "${selector}" not found`);
+//   }
+// }
 
-  try {
-    const response = await fetch(url, {
-      method: method,
-      headers: headers,
-      body: JSON.stringify(body),
-      credentials: credentials,
-    });
-    console.log('Response from Request:', response);
-    const contentType = response.headers.get('content-type');
-    if (!response.ok) {
-      throw new Error('Request failed with status ' + response.status);
-    }
+// async function loginUser(): Promise<void> {
+//   const form = document.getElementById('loginForm') as HTMLHtmlElement | null;
+//   if (form) {
+//     form.addEventListener('submit', async (event: Event) => {
+//       event.preventDefault();
 
-    if (contentType && contentType.includes('application/json')) {
-      await response.json();
-    } else {
-      await response.text();
-    }
-    return true;
-  } catch (error) {
-    console.error('Request failed:', error);
-    return false;
-  }
-}
+//       const userData: UserData = {};
+//       document.querySelectorAll<HTMLInputElement>('#loginForm input').forEach((input) => {
+//         userData[input.name] = input.value;
+//       });
 
-function addTask(inputBox: HTMLInputElement, listContainer: HTMLElement): void {
-  if (inputBox.value === '') {
-    alert('You have to write something!');
-  } else {
-    let li = document.createElement('li');
-    li.textContent = inputBox.value;
-    listContainer.appendChild(li);
-    let span = document.createElement('span');
-    span.innerHTML = '\u00d7';
-    li.appendChild(span);
-  }
-  inputBox.value = '';
-  saveData(listContainer);
-}
+//       console.log('User information sending to API:', userData);
+//       try {
+//         const action = form.getAttribute('action');
+//         const method = form.getAttribute('method')?.toUpperCase();
+//         const result = await request({
+//           suffix: action,
+//           method: method,
+//           body: userData,
+//         });
+//         if (result) {
+//           pages.todo();
+//         } else {
+//           pages.signup();
+//         }
+//       } catch (error) {
+//         console.error('Error during login:', error);
+//         pages.signup();
+//       }
+//     });
+//   } else {
+//     console.error('loginForm not found');
+//   }
+// }
 
-function handleEvent(event: Event, inputBox: HTMLInputElement, listContainer: HTMLElement) {
-  const { type, target, key } = event as KeyboardEvent & MouseEvent;
-  if (type === 'keydown' && key === 'Enter') {
-    event.preventDefault();
-    addTask(inputBox, listContainer);
-  }
-  if (type === 'click' && target instanceof HTMLElement) {
-    if (target.tagName === 'LI') {
-      target.classList.toggle('checked');
-    } else if (target.tagName === 'SPAN' && target.parentElement) {
-      target.parentElement.remove();
-    }
-  }
+// async function request({ method = 'POST', suffix, body, credentials = 'include' }: RequestParams): Promise<boolean> {
+//   const headers = {
+//     Accept: 'application/json',
+//     'Content-Type': 'application/json',
+//   };
 
-  saveData(listContainer);
-}
+//   const url = `https://ya-praktikum.tech/api/v2/${suffix}`;
+//   console.log('URL API:', url);
 
-function setupEventListeners(inputBox: HTMLInputElement, listContainer: HTMLElement): void {
-  const addButton = document.getElementById('add-task-btn');
-  if (addButton instanceof HTMLButtonElement) {
-    addButton.addEventListener('click', () => addTask(inputBox, listContainer));
-  } else {
-    console.error('Add button not found');
-  }
+//   try {
+//     const response = await fetch(url, {
+//       method: method,
+//       headers: headers,
+//       body: JSON.stringify(body),
+//       credentials: credentials,
+//     });
+//     console.log('Response from Request:', response);
+//     const contentType = response.headers.get('content-type');
+//     if (!response.ok) {
+//       throw new Error('Request failed with status ' + response.status);
+//     }
 
-  listContainer.addEventListener('click', (event: MouseEvent) => handleEvent(event, inputBox, listContainer));
-  inputBox.addEventListener('keydown', (event: KeyboardEvent) => handleEvent(event, inputBox, listContainer));
-}
+//     if (contentType && contentType.includes('application/json')) {
+//       await response.json();
+//     } else {
+//       await response.text();
+//     }
+//     return true;
+//   } catch (error) {
+//     console.error('Request failed:', error);
+//     return false;
+//   }
+// }
 
-function saveData(listContainer: HTMLElement): void {
-  localStorage.setItem('data', listContainer.innerHTML);
-}
+// function addTask(inputBox: HTMLInputElement, listContainer: HTMLElement): void {
+//   if (inputBox.value === '') {
+//     alert('You have to write something!');
+//   } else {
+//     let li = document.createElement('li');
+//     li.textContent = inputBox.value;
+//     listContainer.appendChild(li);
+//     let span = document.createElement('span');
+//     span.innerHTML = '\u00d7';
+//     li.appendChild(span);
+//   }
+//   inputBox.value = '';
+//   saveData(listContainer);
+// }
 
-function showTasks(listContainer: HTMLElement): void {
-  const storeData = localStorage.getItem('data');
-  listContainer.innerHTML = storeData !== null ? storeData : '';
-}
+// function handleEvent(event: Event, inputBox: HTMLInputElement, listContainer: HTMLElement) {
+//   const { type, target, key } = event as KeyboardEvent & MouseEvent;
+//   if (type === 'keydown' && key === 'Enter') {
+//     event.preventDefault();
+//     addTask(inputBox, listContainer);
+//   }
+//   if (type === 'click' && target instanceof HTMLElement) {
+//     if (target.tagName === 'LI') {
+//       target.classList.toggle('checked');
+//     } else if (target.tagName === 'SPAN' && target.parentElement) {
+//       target.parentElement.remove();
+//     }
+//   }
 
-function updateHistory(pageName: string, pageTitle: string, pagePath: string) {
-  history.pushState({ page: pageName }, pageTitle, pagePath);
-}
+//   saveData(listContainer);
+// }
+
+// function setupEventListeners(inputBox: HTMLInputElement, listContainer: HTMLElement): void {
+//   const addButton = document.getElementById('add-task-btn');
+//   if (addButton instanceof HTMLButtonElement) {
+//     addButton.addEventListener('click', () => addTask(inputBox, listContainer));
+//   } else {
+//     console.error('Add button not found');
+//   }
+
+//   listContainer.addEventListener('click', (event: MouseEvent) => handleEvent(event, inputBox, listContainer));
+//   inputBox.addEventListener('keydown', (event: KeyboardEvent) => handleEvent(event, inputBox, listContainer));
+// }
+
+// function saveData(listContainer: HTMLElement): void {
+//   localStorage.setItem('data', listContainer.innerHTML);
+// }
+
+// function showTasks(listContainer: HTMLElement): void {
+//   const storeData = localStorage.getItem('data');
+//   listContainer.innerHTML = storeData !== null ? storeData : '';
+// }
+
+// function updateHistory(pageName: string, pageTitle: string, pagePath: string) {
+//   history.pushState({ page: pageName }, pageTitle, pagePath);
+// }
